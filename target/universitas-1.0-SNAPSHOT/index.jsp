@@ -66,11 +66,41 @@
           <div class="item-1">
             <div class="columns">
               <div class="column is-half">
-                <h2 class="title is-1">Welcome to Our Fruits Shop</h2>
+                <h2 class="title is-1">Universitas</h2>
                 <p>
                   There are many variations of passages of Lorem Ipsum available, but the majority
                   have suffered alteration in some form, by injected humour, or randomised words
                   which don't look even slightly believable.
+<br/>
+                  <%
+                    int a = 5;
+                    float b = 3;
+                    double c = 3.4;
+                    char y = 'p';
+                    boolean o = true;
+
+                    char vector[] = new char[5];
+                    vector[0] = 'h';
+                    vector[1] = 'o';
+                    vector[2] = 'l';
+                    vector[3] = 'a';
+                    vector[4] = '!';
+
+                    char arreglo[] = {'a','n','a'};
+
+                    for(int i=0; i < arreglo.length; i++){
+                      %>
+                  <b>El valor es: </b><%= arreglo[i]%><br/>
+                  <%
+                    }
+
+                  %>
+
+                  El valor de a es: <%=a++%><br/>
+                  El valor de a es: <%=++a%><br/>
+
+                  El valor de o es: <%=o%>
+                  <%=vector[0]%><%=vector[1]%><%=vector[2]%><%=vector[3]%><%=vector[4]%>
                 </p>
                 <br />
 
@@ -123,8 +153,16 @@
                   There are many variations of passages of Lorem Ipsum available, but the majority
                   have suffered alteration in some form, by injected humour, or randomised words
                   which don't look even slightly believable.
+
+
+
                 </p>
                 <br />
+
+
+
+
+
 
                 <div class="buttons is-left">
                   <button class="button is-medium is-orange button is-link is-light">

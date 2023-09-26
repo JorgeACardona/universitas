@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Bulma Tropico 🍍</title>
+    <title>Universitas</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma-social@2/css/all.min.css" />
@@ -62,45 +62,60 @@
 
     <section class="section" id="carousel-section">
       <div class="container">
-        <div id="carousel-demo" class="carousel pb-6" style="overflow: hidden">
+        <div id="carousel-demo." class="carousel pb-6" style="overflow: hidden">
           <div class="item-1">
             <div class="columns">
               <div class="column is-half">
                 <h2 class="title is-1">Universitas</h2>
-                <p>
-                  There are many variations of passages of Lorem Ipsum available, but the majority
-                  have suffered alteration in some form, by injected humour, or randomised words
-                  which don't look even slightly believable.
-<br/>
-                  <%
-                    int a = 5;
-                    float b = 3;
-                    double c = 3.4;
-                    char y = 'p';
-                    boolean o = true;
 
-                    char vector[] = new char[5];
-                    vector[0] = 'h';
-                    vector[1] = 'o';
-                    vector[2] = 'l';
-                    vector[3] = 'a';
-                    vector[4] = '!';
+                <div id="resultado">
 
-                    char arreglo[] = {'a','n','a'};
 
-                    for(int i=0; i < arreglo.length; i++){
+                </div>
+                <div>
+                  <table border="1" style="align-items: center">
+                  <tr>
+                    <%
+                      char arreglo[] = {'y','o','h','a','g','o','y','o','g','a','h','o','y'};
+                      for(int i=0; i < arreglo.length; i++){
+                    %>
+
+                    <td style="text-align: center; width: 15px"><%= arreglo[i] %></td>
+                    <%
+                      }
+                    %>
+                  </tr>
+
+                    <tr>
+                      <%
+
+                        for(int i=0; i < arreglo.length; i++){
                       %>
-                  <b>El valor es: </b><%= arreglo[i]%><br/>
-                  <%
+
+                      <td style="text-align: center; width: 15px"><%= i %></td>
+                      <%
+                        }
+                      %>
+                    </tr>
+                </table></div>
+                <p>
+<br/>
+               <script>
+                    function esPalindromo(frase) {
+                      return frase === frase.split("").reverse().join("");
                     }
 
-                  %>
+                    var frase = '<%= new String(arreglo) %>'; // Convertimos el arreglo de caracteres a String
+                    var resultado = esPalindromo(frase);
 
-                  El valor de a es: <%=a++%><br/>
-                  El valor de a es: <%=++a%><br/>
+                    // Mostramos el resultado en la página
+                    var resultadoElement = document.getElementById("resultado");
+                    resultadoElement.innerHTML = resultado ? "Es un palindromo" : "No es un palindromo";
 
-                  El valor de o es: <%=o%>
-                  <%=vector[0]%><%=vector[1]%><%=vector[2]%><%=vector[3]%><%=vector[4]%>
+
+                  </script>
+
+
                 </p>
                 <br />
 

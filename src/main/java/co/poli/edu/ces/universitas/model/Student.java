@@ -6,6 +6,18 @@ public class Student {
     protected String document;
     private String name;
 
+    public Student(int id, String document, String name){
+
+        this.id = id;
+        this.document = document;
+        this.name = name;
+
+    }
+
+    public Student() {
+
+    }
+
     public int getId(){
         return this.id;
     }

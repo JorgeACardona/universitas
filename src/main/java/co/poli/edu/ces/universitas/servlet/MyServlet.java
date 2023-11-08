@@ -3,12 +3,15 @@ package co.poli.edu.ces.universitas.servlet;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 
 public abstract class MyServlet extends HttpServlet {
+
 
     public JsonObject getParamsFromPost(HttpServletRequest request) throws IOException {
         BufferedReader reader = request.getReader();
@@ -21,5 +24,9 @@ public abstract class MyServlet extends HttpServlet {
         reader.close();
 
         return JsonParser.parseString(sb.toString()).getAsJsonObject();
+    }
+
+    protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
     }
 }

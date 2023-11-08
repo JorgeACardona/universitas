@@ -4,18 +4,14 @@ import co.poli.edu.ces.universitas.model.Student;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 @WebServlet(name = "studentServlet", value = "/student")
@@ -94,7 +90,102 @@ public class StudentServlet extends MyServlet {
 
     }
 
+    @Override
+    public void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ServletOutputStream out = resp.getOutputStream();
+        resp.setContentType("application/json");
+        JsonObject body = this.getParamsFromPost(req);
 
+        int studentId = body.get("id").getAsInt();
+
+        Student studentToUpdate = null;
+        for(Student s: students){
+            if (s.getId() == studentId){
+                studentToUpdate = s;
+                break;
+            }
+        }
+
+        if (studentToUpdate != null) {
+
+            studentToUpdate.setDocument(body.get("document").getAsString());
+            studentToUpdate.setName(body.get("name").getAsString());
+
+            out.println(gson.toJson(studentToUpdate));
+        } else {
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            out.println("{\"error\": \"Estudiante no encontrado\"}");
+        }
+
+        out.flush();
+    }
+
+    @Override
+    protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ServletOutputStream out = resp.getOutputStream();
+        resp.setContentType("application/json");
+        JsonObject body = this.getParamsFromPost(req);
+
+        int studentId = body.get("id").getAsInt();
+
+        Student studentToUpdate = null;
+        for(Student s: students){
+            if (s.getId() == studentId){
+                studentToUpdate = s;
+                break;
+            }
+        }
+
+        if (studentToUpdate != null) {
+            if (body.has("document")) {
+                studentToUpdate.setDocument(body.get("document").getAsString());
+            }
+            if (body.has("name")) {
+                studentToUpdate.setName(body.get("name").getAsString());
+            }
+
+            out.println(gson.toJson(studentToUpdate));
+        } else {
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            out.println("{\"error\": \"Estudiante no encontrado\"}");
+        }
+
+        out.flush();
+    }
+
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ServletOutputStream out = resp.getOutputStream();
+        resp.setContentType("application/json");
+
+        String studentId = req.getParameter("studentid");
+
+        if(studentId != null){
+            int id = Integer.parseInt(studentId);
+            Student studentToDelete = null;
+            for(Student s: students){
+                if (s.getId() == id){
+                    studentToDelete = s;
+                    out.println("{\"Estudiante eliminado\"}");
+                    break;
+                }
+            }
+
+            if (studentToDelete != null) {
+                students.remove(studentToDelete);
+                out.println(gson.toJson(studentToDelete));
+            } else {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                out.println("{\"error\": \"Estudiante no encontrado\"}");
+            }
+        } else {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.println("{\"error\": \"Parámetro 'studentid' faltante en la solicitud\"}");
+        }
+
+        out.flush();
+    }
 
 
     public void destroy() {

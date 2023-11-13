@@ -121,36 +121,22 @@ public class StudentServlet extends MyServlet {
     }
 
     @Override
-    protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ServletOutputStream out = resp.getOutputStream();
-        resp.setContentType("application/json");
-        JsonObject body = this.getParamsFromPost(req);
-
-        int studentId = body.get("id").getAsInt();
-
-        Student studentToUpdate = null;
-        for(Student s: students){
-            if (s.getId() == studentId){
-                studentToUpdate = s;
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String method = req.getMethod();
+        switch (method){
+            case "PATCH":
+                this.doPatch(req, resp);
                 break;
-            }
+            default:
+                super.service(req, resp);
         }
 
-        if (studentToUpdate != null) {
-            if (body.has("document")) {
-                studentToUpdate.setDocument(body.get("document").getAsString());
-            }
-            if (body.has("name")) {
-                studentToUpdate.setName(body.get("name").getAsString());
-            }
+    }
 
-            out.println(gson.toJson(studentToUpdate));
-        } else {
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            out.println("{\"error\": \"Estudiante no encontrado\"}");
-        }
-
-        out.flush();
+    protected void doPatch(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.out.println("************");
+        System.out.println("Entro al metodo patch!!!");
+        System.out.println("************");
     }
 
 

@@ -26,7 +26,4 @@ public abstract class MyServlet extends HttpServlet {
         return JsonParser.parseString(sb.toString()).getAsJsonObject();
     }
 
-    protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-    }
 }

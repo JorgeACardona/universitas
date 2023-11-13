@@ -1,5 +1,7 @@
 package co.poli.edu.ces.universitas.servlet;
 
+import co.poli.edu.ces.universitas.controller.CtrStudent;
+import co.poli.edu.ces.universitas.dto.DtoStudent;
 import co.poli.edu.ces.universitas.model.Student;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -10,6 +12,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -22,103 +25,107 @@ public class StudentServlet extends MyServlet {
 
     private Gson gson;
 
-    private ArrayList<Student> students;
+    private ArrayList<DtoStudent> students;
 
     public void init() {
-
-        students = new ArrayList<>();
-
         gsonBuilder = new GsonBuilder();
         gson = gsonBuilder.create();
+        students = new ArrayList<>();
 
-        Student student1 = new Student();
+        DtoStudent student1 = new DtoStudent();
         student1.id = 10;
         student1.setName("pedro");
-        student1.setDocument("32421785");
+        student1.setDocument("454543545");
 
         students.add(student1);
 
-        for(int i = 0; i < students.size(); i++){
+        for (int i = 0; i < students.size(); i++)
+        {
             System.out.println(students.get(i));
         }
-
         message = "Hello Poli!!!";
     }
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServletOutputStream out = resp.getOutputStream();
         resp.setContentType("application/json");
         JsonObject body = this.getParamsFromPost(req);
-
-        Student std = new Student(
-                body.get("id").getAsInt(),
+        CtrStudent ctr = new CtrStudent();
+        DtoStudent std = new DtoStudent(
                 body.get("document").getAsString(),
                 body.get("name").getAsString()
         );
 
-        this.students.add(std);
-        out.print(gson.toJson(std));
-        out.print("<b>Hello from post method</b>");
+        DtoStudent newStudent = ctr.addStudent(std);
+
+        out.print(gson.toJson(newStudent));
         out.flush();
 
 
     }
 
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json");
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ServletOutputStream out = resp.getOutputStream();
+        resp.setContentType("application/json");
+        String studentIdParam = req.getParameter("id");
+        CtrStudent ctr = new CtrStudent();
 
-
-        String studentId = request.getParameter("studentid");
-
-        PrintWriter out = response.getWriter();
-
-        if(studentId == null){
-            out.println(gson.toJson(students));
+        if (studentIdParam != null && !studentIdParam.isEmpty()) {
+            int studentId = Integer.parseInt(studentIdParam);
+            DtoStudent student = ctr.getStudentById(studentId);
+            out.print(gson.toJson(student));
         } else {
-            Student studentSearch = null;
-            for(Student s: students){
-                if (s.getId() == Integer.parseInt(studentId)){
-                   studentSearch = s;
-                   break;
-                }
-            }
-            out.println(gson.toJson(studentSearch));
+            ArrayList<DtoStudent> students = ctr.getAllStudents();
+            out.print(gson.toJson(students));
         }
 
-
+        out.flush();
     }
 
     @Override
-    public void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServletOutputStream out = resp.getOutputStream();
         resp.setContentType("application/json");
-        JsonObject body = this.getParamsFromPost(req);
 
+        BufferedReader reader = req.getReader();
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+        CtrStudent ctr = new CtrStudent();
+
+        while ((line = reader.readLine()) != null) {
+            stringBuilder.append(line);
+        }
+
+        JsonObject body = gson.fromJson(stringBuilder.toString(), JsonObject.class);
         int studentId = body.get("id").getAsInt();
 
-        Student studentToUpdate = null;
-        for(Student s: students){
-            if (s.getId() == studentId){
-                studentToUpdate = s;
-                break;
-            }
-        }
+        DtoStudent updatedStudent = new DtoStudent(
+                body.get("document").getAsString(),
+                body.get("name").getAsString()
+        );
 
-        if (studentToUpdate != null) {
+        DtoStudent result = ctr.updateStudent(studentId, updatedStudent);
 
-            studentToUpdate.setDocument(body.get("document").getAsString());
-            studentToUpdate.setName(body.get("name").getAsString());
-
-            out.println(gson.toJson(studentToUpdate));
-        } else {
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            out.println("{\"error\": \"Estudiante no encontrado\"}");
-        }
-
+        out.print(gson.toJson(result));
         out.flush();
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ServletOutputStream out = resp.getOutputStream();
+        resp.setContentType("application/json");
+        CtrStudent ctr = new CtrStudent();
+
+        int studentId = Integer.parseInt(req.getParameter("id"));
+
+        ctr.deleteStudent(studentId);
+
+        out.print(gson.toJson("Student deleted successfully"));
+        out.flush();
+    }
+
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -138,41 +145,6 @@ public class StudentServlet extends MyServlet {
         System.out.println("Entro al metodo patch!!!");
         System.out.println("************");
     }
-
-
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ServletOutputStream out = resp.getOutputStream();
-        resp.setContentType("application/json");
-
-        String studentId = req.getParameter("studentid");
-
-        if(studentId != null){
-            int id = Integer.parseInt(studentId);
-            Student studentToDelete = null;
-            for(Student s: students){
-                if (s.getId() == id){
-                    studentToDelete = s;
-                    out.println("{\"Estudiante eliminado\"}");
-                    break;
-                }
-            }
-
-            if (studentToDelete != null) {
-                students.remove(studentToDelete);
-                out.println(gson.toJson(studentToDelete));
-            } else {
-                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                out.println("{\"error\": \"Estudiante no encontrado\"}");
-            }
-        } else {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            out.println("{\"error\": \"Parámetro 'studentid' faltante en la solicitud\"}");
-        }
-
-        out.flush();
-    }
-
 
     public void destroy() {
     }

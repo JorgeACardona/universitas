@@ -22,25 +22,22 @@ public abstract class Conexion {
     private String url = "jdbc:mysql://" + hostname + ":" + port + "/" + database + "?useSSL=false";
 
     // Nombre de usuario
-    public String username = "root";
+    public String username = "andres";
 
     // Clave de usuario
-    public String password = "";
+    public String password = "1000548955";
 
     public Conexion(){
 
     }
 
-    public Connection conectarMySQL() {
-        Connection conn = null;
-
+    public Connection getConexion(){
         try {
             Class.forName(driver);
-            conn = DriverManager.getConnection(url, username, password);
+            return DriverManager.getConnection(url, username, password);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
-
-        return conn;
+        return null;
     }
 }

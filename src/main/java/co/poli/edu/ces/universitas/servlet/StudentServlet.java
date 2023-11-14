@@ -27,6 +27,8 @@ public class StudentServlet extends MyServlet {
 
     private ArrayList<DtoStudent> students;
 
+    CtrStudent ctr = new CtrStudent();
+
     public void init() {
         gsonBuilder = new GsonBuilder();
         gson = gsonBuilder.create();
@@ -50,7 +52,6 @@ public class StudentServlet extends MyServlet {
         ServletOutputStream out = resp.getOutputStream();
         resp.setContentType("application/json");
         JsonObject body = this.getParamsFromPost(req);
-        CtrStudent ctr = new CtrStudent();
         DtoStudent std = new DtoStudent(
                 body.get("document").getAsString(),
                 body.get("name").getAsString()
@@ -70,7 +71,6 @@ public class StudentServlet extends MyServlet {
         ServletOutputStream out = resp.getOutputStream();
         resp.setContentType("application/json");
         String studentIdParam = req.getParameter("id");
-        CtrStudent ctr = new CtrStudent();
 
         if (studentIdParam != null && !studentIdParam.isEmpty()) {
             int studentId = Integer.parseInt(studentIdParam);
@@ -88,11 +88,9 @@ public class StudentServlet extends MyServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServletOutputStream out = resp.getOutputStream();
         resp.setContentType("application/json");
-
         BufferedReader reader = req.getReader();
         StringBuilder stringBuilder = new StringBuilder();
         String line;
-        CtrStudent ctr = new CtrStudent();
 
         while ((line = reader.readLine()) != null) {
             stringBuilder.append(line);
@@ -116,13 +114,12 @@ public class StudentServlet extends MyServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServletOutputStream out = resp.getOutputStream();
         resp.setContentType("application/json");
-        CtrStudent ctr = new CtrStudent();
 
         int studentId = Integer.parseInt(req.getParameter("id"));
 
         ctr.deleteStudent(studentId);
 
-        out.print(gson.toJson("Student deleted successfully"));
+        out.print(gson.toJson("Estudiante eliminado"));
         out.flush();
     }
 

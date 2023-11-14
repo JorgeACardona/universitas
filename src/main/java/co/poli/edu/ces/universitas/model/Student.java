@@ -26,7 +26,6 @@ public class Student extends Conexion implements CRUD{
     }
 
     public Student() {
-
     }
 
     public int getId(){
@@ -53,7 +52,6 @@ public class Student extends Conexion implements CRUD{
     public void setName(String name) {
         this.name = name;
     }
-
 
     @Override
     public String toString() {
@@ -98,7 +96,6 @@ public class Student extends Conexion implements CRUD{
                 while (rs.next()) {
                     int id = rs.getInt("id");
                     String name = rs.getString("name");
-                    // Asegúrate de tener un constructor en la clase Student para estos valores
                     Student student = new Student(id, name, document);
                     students.add(student);
                 }
@@ -135,7 +132,7 @@ public class Student extends Conexion implements CRUD{
                         String name = rs.getString("name");
                         return new Student(id, name, document);
                     } else {
-                        return null; // No se encontró ningún estudiante con el ID proporcionado
+                        return null;
                     }
                 }
             } finally {
